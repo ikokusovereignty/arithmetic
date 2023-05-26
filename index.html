@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Arithmetic</title>
+
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
+  </head>
+  <style>
+    body {
+      display: flex;
+      margin: 0;
+      background-color: #ced9ce;
+    }
+    div {
+      box-sizing: border-box;
+    }
+    span,
+    input {
+      font-family: 'Inter', sans-serif;
+      line-height: 1;
+    }
+    .selectorOption:hover {
+      cursor: pointer;
+      background-color: #3d993d;
+    }
+    .selectorOption:hover > div > span {
+      color: #e6f2e6 !important;
+    }
+    .selectorOption:first-child {
+      border-radius: 10px 10px 0 0;
+    }
+    .selectorOption:last-child {
+      border-radius: 0 0 10px 10px;
+    }
+    .selector:hover {
+      cursor: pointer;
+      background-color: #b6bfb6 !important;
+    }
+    #takeTest:hover,
+    #listenToNextProblemOrEndTest:hover {
+      cursor: pointer;
+      background-color: #ced9ce !important;
+    }
+    #takeTest:hover > span,
+    #listenToNextProblemOrEndTest:hover > span {
+      color: #3d993d !important;
+    }
+    #takeTest:hover > svg,
+    #listenToNextProblemOrEndTest:hover > svg {
+      fill: #3d993d;
+    }
+    @media screen and (max-width: 500px) {
+      #content {
+        flex-grow: 1 !important;
+        margin: 0 !important;
+        align-self: stretch !important;
+      }
+      .descriptionActions {
+        flex-direction: column !important;
+        align-self: stretch !important;
+      }
+      #listenToNextProblemOrEndTest {
+        align-self: stretch !important;
+      }
+      div:has(> #ageSelector) {
+        align-self: stretch !important;
+      }
+      .selectorOptions {
+        width: 100% !important;
+      }
+      #inputActions {
+        flex-direction: column;
+      }
+    }
+    #listenAgain:hover {
+      cursor: pointer;
+      background-color: #e6f2e6 !important;
+    }
+    #listenAgain:hover > span {
+      color: #3d993d !important;
+    }
+    #listenAgain:hover > svg {
+      fill: #3d993d;
+    }
+  </style>
+  <body>
+    <div style="position: fixed; width: 100%; height: 100%; display: flex; overflow: auto">
+      <div id="content" style="display: flex; flex-direction: column; align-self: center; margin: 0 auto; background-color: #e6f2e6; padding: 40px; border-radius: 20px; gap: 40px">
+        <span style="color: #3d993d; font-weight: 700">ARITHMETIC</span>
+        <div id="descriptionScreen" style="display: flex; flex-direction: column; gap: 40px">
+          <span style="max-width: 500px; margin: -0.25em 0; line-height: 1.5; color: #242624">In this test you'll listen to an arithmetic word problem, solve it, and then enter the solution (a single number, fractions typed as decimals with dots) in a text box, in under 30 seconds. You may ask for the problem to be spoken again by pressing the "Listen Again" button, but only once, and while it's being spoken you'll still run out of time.</span>
+          <div class="descriptionActions" style="display: flex; gap: 40px; align-self: flex-end">
+            <div id="takeTest" style="display: flex; background-color: #3d993d; padding: 20px; border-radius: 10px; align-items: center; gap: 20px">
+              <span style="color: #e6f2e6">Take the test</span>
+              <svg style="min-width: 16px; min-height: 16px" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#e6f2e6" viewBox="0 0 256 256">
+                <path d="M184.49,136.49l-80,80a12,12,0,0,1-17-17L159,128,87.51,56.49a12,12,0,1,1,17-17l80,80A12,12,0,0,1,184.49,136.49Z"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div id="listeningScreen" style="display: none; gap: 20px">
+          <svg style="min-width: 64px; min-height: 64px" xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="#242624" viewBox="0 0 256 256">
+            <path d="M160,32V224a8,8,0,0,1-12.91,6.31L77.25,176H32a16,16,0,0,1-16-16V96A16,16,0,0,1,32,80H77.25l69.84-54.31A8,8,0,0,1,160,32Zm32,64a8,8,0,0,0-8,8v48a8,8,0,0,0,16,0V104A8,8,0,0,0,192,96Z"></path>
+          </svg>
+          <span id="currentCharacter" style="display: flex; margin: -0.25em 0; max-width: 500px; line-height: 1.5; color: #242624; font-size: 64px; font-weight: 700">Listen to the problem!</span>
+        </div>
+        <div id="inputScreen" style="display: none; flex-direction: column; gap: 40px">
+          <div style="display: flex; background-color: #3d993d; padding: 20px; border-radius: 10px; align-self: flex-start; gap: 20px">
+            <svg style="min-width: 16px; min-height: 16px" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#e6f2e6" viewBox="0 0 256 256">
+              <path d="M211.31,196.69A16,16,0,0,1,200,224H56a16,16,0,0,1-11.32-27.31,1.59,1.59,0,0,0,.13-.13L116.43,128,44.82,59.44a1.59,1.59,0,0,0-.13-.13A16,16,0,0,1,56,32H200a16,16,0,0,1,11.32,27.31,1.59,1.59,0,0,0-.13.13L139.57,128l71.61,68.56A1.59,1.59,0,0,0,211.31,196.69Z"></path>
+            </svg>
+            <span id="timeLeft" style="color: #e6f2e6">30</span>
+          </div>
+          <span style="max-width: 500px; margin: -0.25em 0; line-height: 1.5; color: #242624">Enter the solution to the problem as a single number (fractions must be entered as decimals, with dots).</span>
+          <input type="number" id="solutionInput" placeholder="Solution" style="background-color: #ced9ce; border: 0; padding: 20px; border-radius: 10px; outline: none; color: #242624; font-size: 16px" />
+          <div id="inputActions" style="display: flex; gap: 20px">
+            <div id="listenAgain" style="display: flex; background-color: #ced9ce; padding: 20px; border-radius: 10px; align-items: center; gap: 20px; align-self: flex-end; gap: 20px">
+              <span style="color: #242624">Listen again</span>
+              <svg style="min-width: 16px; min-height: 16px" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#242624" viewBox="0 0 256 256"><path d="M24,128A72.08,72.08,0,0,1,96,56H204.69L194.34,45.66a8,8,0,0,1,11.32-11.32l24,24a8,8,0,0,1,0,11.32l-24,24a8,8,0,0,1-11.32-11.32L204.69,72H96a56.06,56.06,0,0,0-56,56,8,8,0,0,1-16,0Zm200-8a8,8,0,0,0-8,8,56.06,56.06,0,0,1-56,56H51.31l10.35-10.34a8,8,0,0,0-11.32-11.32l-24,24a8,8,0,0,0,0,11.32l24,24a8,8,0,0,0,11.32-11.32L51.31,200H160a72.08,72.08,0,0,0,72-72A8,8,0,0,0,224,120Zm-88,40a8,8,0,0,0,8-8V104a8,8,0,0,0-11.58-7.16l-16,8a8,8,0,1,0,7.16,14.31l4.42-2.21V152A8,8,0,0,0,136,160Z"></path></svg>
+            </div>
+            <div id="listenToNextProblemOrEndTest" style="display: flex; background-color: #3d993d; padding: 20px; border-radius: 10px; align-items: center; gap: 20px; align-self: flex-end">
+              <span style="color: #e6f2e6">Listen to the next problem (or end the test)</span>
+              <svg style="min-width: 16px; min-height: 16px" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#e6f2e6" viewBox="0 0 256 256"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path></svg>
+            </div>
+          </div>
+        </div>
+        <div id="scoreScreen" style="display: none; flex-direction: column; gap: 40px">
+          <div style="display: flex; flex-direction: column; position: relative; align-self: flex-start">
+            <div data-options="age" class="selector" id="ageSelector" style="display: flex; flex-direction: column; padding: 20px; background-color: #ced9ce; border-radius: 10px; gap: 20px">
+              <div style="display: flex; gap: 20px">
+                <span style="color: #3d993d; font-size: 12px; font-weight: 700">AGE RANGE</span>
+                <svg style="min-width: 12px; min-height: 12px" xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="#3d993d" viewBox="0 0 256 256">
+                  <path d="M216.49,104.49l-80,80a12,12,0,0,1-17,0l-80-80a12,12,0,0,1,17-17L128,159l71.51-71.52a12,12,0,0,1,17,17Z"></path>
+                </svg>
+              </div>
+              <span style="color: #242624">16-17</span>
+            </div>
+            <div data-options="age" class="selectorOptions" id="ageOptions" style="position: absolute; background-color: #b6bfb6; top: 100%; margin-top: 20px; border-radius: 10px; display: flex; flex-direction: column; display: none; width: max-content">
+              <div data-age="17" class="selectorOption ageOption" style="display: flex; padding: 20px">
+                <div style="display: flex; flex-direction: column; flex-start: 1; gap: 20px">
+                  <span style="color: #403d3d">16-17</span>
+                  <div style="height: 5px; border-radius: 1.25px; background-color: #ced9ce"></div>
+                </div>
+              </div>
+              <div data-age="19" class="selectorOption ageOption" style="display: flex; padding: 20px">
+                <div style="display: flex; flex-direction: column; flex-start: 1; gap: 20px">
+                  <span style="color: #403d3d">18-19</span>
+                  <div style="height: 5px; border-radius: 1.25px; background-color: #ced9ce"></div>
+                </div>
+              </div>
+              <div data-age="24" class="selectorOption ageOption" style="display: flex; padding: 20px">
+                <div style="display: flex; flex-direction: column; flex-start: 1; gap: 20px">
+                  <span style="color: #403d3d">20-24</span>
+                  <div style="height: 5px; border-radius: 1.25px; background-color: #ced9ce"></div>
+                </div>
+              </div>
+              <div data-age="29" class="selectorOption ageOption" style="display: flex; padding: 20px">
+                <div style="display: flex; flex-direction: column; flex-start: 1; gap: 20px">
+                  <span style="color: #403d3d">25-29</span>
+                  <div style="height: 5px; border-radius: 1.25px; background-color: #ced9ce"></div>
+                </div>
+              </div>
+              <div data-age="34" class="selectorOption ageOption" style="display: flex; padding: 20px">
+                <div style="display: flex; flex-direction: column; flex-start: 1; gap: 20px">
+                  <span style="color: #403d3d">30-34</span>
+                  <div style="height: 5px; border-radius: 1.25px; background-color: #ced9ce"></div>
+                </div>
+              </div>
+              <div data-age="44" class="selectorOption ageOption" style="display: flex; padding: 20px">
+                <div style="display: flex; flex-direction: column; flex-start: 1; gap: 20px">
+                  <span style="color: #403d3d">35-44</span>
+                  <div style="height: 5px; border-radius: 1.25px; background-color: #ced9ce"></div>
+                </div>
+              </div>
+              <div data-age="54" class="selectorOption ageOption" style="display: flex; padding: 20px">
+                <div style="display: flex; flex-direction: column; flex-start: 1; gap: 20px">
+                  <span style="color: #403d3d">45-54</span>
+                  <div style="height: 5px; border-radius: 1.25px; background-color: #ced9ce"></div>
+                </div>
+              </div>
+              <div data-age="64" class="selectorOption ageOption" style="display: flex; padding: 20px">
+                <div style="display: flex; flex-direction: column; flex-start: 1; gap: 20px">
+                  <span style="color: #403d3d">55-64</span>
+                  <div style="height: 5px; border-radius: 1.25px; background-color: #ced9ce"></div>
+                </div>
+              </div>
+              <div data-age="69" class="selectorOption ageOption" style="display: flex; padding: 20px">
+                <div style="display: flex; flex-direction: column; flex-start: 1; gap: 20px">
+                  <span style="color: #403d3d">65-69</span>
+                  <div style="height: 5px; border-radius: 1.25px; background-color: #ced9ce"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 40px">
+            <span style="color: #3d993d; font-size: 12px; font-weight: 700">RAW SCORE</span>
+            <span id="rawScoreText" style="color: #242624"></span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 40px">
+            <span style="color: #3d993d; font-size: 12px; font-weight: 700">SCALED SCORE (MEAN OF 10, STANDARD DEVIATION OF 3)</span>
+            <span id="scaledScoreText" style="color: #242624"></span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 40px">
+            <span style="color: #3d993d; font-size: 12px; font-weight: 700">SCALED SCORE (MEAN OF 100, STANDARD DEVIATION OF 15)</span>
+            <span id="scaledScore2Text" style="color: #242624"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script type="module">
+    import scores from './scores.js'
+
+    const selectors = document.querySelectorAll('.selector')
+    selectors.forEach((selector) => {
+      let options = document.querySelector(`.selectorOptions[data-options="${selector.dataset.options}"]`)
+      selector.onclick = (event) => {
+        if (options.style.display == 'flex') {
+          options.style.display = 'none'
+        } else {
+          options.style.display = 'flex'
+        }
+        event.stopPropagation()
+      }
+    })
+
+    window.onclick = (event) => {
+      document.querySelectorAll('.selectorOptions').forEach((selectorOptions) => (selectorOptions.style.display = 'none'))
+    }
+
+    let age = 17
+
+    document.querySelectorAll('.ageOption').forEach(
+      (element) =>
+        (element.onclick = (event) => {
+          let target = event.target
+
+          if (Array.from(target.classList).indexOf('.ageOption') < 0) {
+            target = target.closest('.ageOption')
+          }
+
+          document.querySelector('#ageSelector > span').innerText = target.innerText
+          age = Number(target.dataset.age)
+          setScaledScores()
+        })
+    )
+
+    let rawScore = 5
+
+    let nextProblem = 0
+    const solutions = [8, 5, 5, 17, 5, 3, 200, 38, 140, 30, 186, 600, 47, 49.5, 51, 96, 23100]
+
+    const speaker = new Audio()
+
+    let timeLeftInterval
+
+    listenAgain.onclick = () => {
+      speaker.src = `problems/${nextProblem + 1}.mp3`
+      speaker.oncanplaythrough = () => {
+        speaker.play()
+      }
+      speaker.onended = () => {}
+      listenAgain.style.visibility = 'hidden'
+      solutionInput.focus()
+    }
+
+    function speakNextProblem() {
+      speaker.src = `problems/${nextProblem + 1}.mp3`
+      speaker.oncanplaythrough = () => {
+        speaker.play()
+      }
+      speaker.onended = () => {
+        listeningScreen.style.display = 'none'
+        inputScreen.style.display = 'flex'
+
+        solutionInput.focus()
+        waitForSolution()
+      }
+    }
+
+    function speakNextProblemOrEndTest() {
+      speaker.pause()
+      speaker.onended = () => {
+        listeningScreen.style.display = 'none'
+        inputScreen.style.display = 'flex'
+
+        solutionInput.focus()
+        waitForSolution()
+      }
+
+      if (solutionInput.value.length) {
+        if (Number(solutionInput.value) == solutions[nextProblem]) {
+          rawScore += 1
+        }
+        solutionInput.value = ''
+      }
+
+      clearInterval(timeLeftInterval)
+      inputScreen.style.display = 'none'
+      if (nextProblem < solutions.length - 1) {
+        listeningScreen.style.display = 'flex'
+
+        nextProblem += 1
+
+        setTimeout(() => {
+          speakNextProblem()
+        }, 1000)
+      } else {
+        scoreScreen.style.display = 'flex'
+        rawScoreText.innerText = rawScore
+        setScaledScores()
+      }
+
+      listenAgain.style.visibility = 'visible'
+    }
+
+    function waitForSolution() {
+      let remainingTime = (timeLeft.innerText = 30)
+      timeLeftInterval = setInterval(() => {
+        remainingTime -= 1
+        timeLeft.innerText = remainingTime
+        if (remainingTime == 0) {
+          speakNextProblemOrEndTest()
+        }
+      }, 1000)
+    }
+
+    function addCurrentSeries() {
+      const generatedSeries = generateSeries(currentSeriesLength)
+      const reorderedSeries = reorderSeries(generatedSeries)
+
+      series.push({
+        generated: generatedSeries,
+        reordered: reorderedSeries,
+      })
+    }
+
+    takeTest.onclick = () => {
+      descriptionScreen.style.display = 'none'
+      listeningScreen.style.display = 'flex'
+
+      speakNextProblem()
+    }
+
+    function setScaledScores() {
+      scores[age].every((ageRawScore, index) => {
+        if (rawScore <= ageRawScore) {
+          scaledScoreText.innerText = index + 1
+          scaledScore2Text.innerText = 100 + ((index + 1 - 10) / 3) * 15
+          return false
+        }
+        return true
+      })
+    }
+
+    listenToNextProblemOrEndTest.onclick = () => {
+      speakNextProblemOrEndTest()
+    }
+
+    solutionInput.onkeyup = (event) => {
+      if (event.key == 'Enter') {
+        speakNextProblemOrEndTest()
+      }
+    }
+  </script>
+</html>
