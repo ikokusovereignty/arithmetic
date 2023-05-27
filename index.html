@@ -266,6 +266,7 @@
 
     listenAgain.onclick = () => {
       speaker.src = `problems/${nextProblem + 1}.mp3`
+      speaker.load()
       speaker.oncanplaythrough = () => {
         speaker.play()
       }
