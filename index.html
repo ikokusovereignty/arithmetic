@@ -75,12 +75,6 @@
       #inputActions {
         flex-direction: column;
       }
-      #listenAgain {
-        align-self: stretch !important;
-      }
-      #listeningScreen {
-        flex-direction: column;
-      }
     }
     #listenAgain:hover {
       cursor: pointer;
@@ -265,14 +259,14 @@
     let timeLeftInterval
 
     listenAgain.onclick = () => {
+      listenAgain.style.visibility = 'hidden'
+      solutionInput.focus()
       speaker.src = `problems/${nextProblem + 1}.mp3`
       speaker.load()
       speaker.oncanplaythrough = () => {
         speaker.play()
       }
       speaker.onended = () => {}
-      listenAgain.style.visibility = 'hidden'
-      solutionInput.focus()
     }
 
     function speakNextProblem() {
@@ -291,6 +285,8 @@
     }
 
     function speakNextProblemOrEndTest() {
+      listenAgain.style.visibility = 'visible'
+
       speaker.pause()
       speaker.onended = () => {
         listeningScreen.style.display = 'none'
@@ -313,17 +309,13 @@
         listeningScreen.style.display = 'flex'
 
         nextProblem += 1
-
-        setTimeout(() => {
-          speakNextProblem()
-        }, 1000)
+        
+        speakNextProblem()
       } else {
         scoreScreen.style.display = 'flex'
         rawScoreText.innerText = rawScore
         setScaledScores()
       }
-
-      listenAgain.style.visibility = 'visible'
     }
 
     function waitForSolution() {
@@ -335,16 +327,6 @@
           speakNextProblemOrEndTest()
         }
       }, 1000)
-    }
-
-    function addCurrentSeries() {
-      const generatedSeries = generateSeries(currentSeriesLength)
-      const reorderedSeries = reorderSeries(generatedSeries)
-
-      series.push({
-        generated: generatedSeries,
-        reordered: reorderedSeries,
-      })
     }
 
     takeTest.onclick = () => {
